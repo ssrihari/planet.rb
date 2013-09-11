@@ -21,6 +21,10 @@ class Planet
       @parsers = Parsers.new
     end
 
+    def whitelisted?(entry)
+      !(entry.categories & self.planet.whitelisted_tags).empty?
+    end
+
     def fetch
       # given parser can be set arbitrarily with :type or inferred from the domain
       parser = self.type ? @parsers.get_parser(self.type) : @parsers.get_parser_for(self.feed)
@@ -36,6 +40,7 @@ class Planet
       end
 
       feed.entries.each do |entry|
+        next unless whitelisted?(entry)
         content = if entry.content
                     self.sanitize_images(entry.content.strip)
                   elsif entry.summary
