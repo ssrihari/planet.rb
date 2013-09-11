@@ -22,7 +22,9 @@ class Planet
     end
 
     def whitelisted?(entry)
-      !(entry.categories & self.planet.whitelisted_tags).empty?
+      result = !(entry.categories & self.planet.whitelisted_tags).empty?
+      p "------ ignored post:#{entry.title} with categories: #{entry.categories}" unless result
+      result
     end
 
     def fetch
