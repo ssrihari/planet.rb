@@ -33,7 +33,7 @@ class Planet
 
       # parser instances should mimick Feedzirra interface
       feed = parser.fetch_and_parse(self.feed)
-
+      $stderr.puts "Failed to fetch #{self.feed}" && return if feed.is_a? Fixnum
       self.name ||= feed.title || 'the source'
       self.url ||= feed.url
 
