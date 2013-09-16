@@ -23,7 +23,7 @@ class Planet
 
     def whitelisted?(entry)
       result = !(entry.categories & self.planet.whitelisted_tags).empty?
-      p "------ ignored post:#{entry.title} with categories: #{entry.categories}" unless result
+      p "------ ignored post:#{entry.title} with categories: [#{entry.categories.join(', ')}]" unless result
       result
     end
 
