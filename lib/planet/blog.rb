@@ -23,7 +23,7 @@ class Planet
 
     def whitelisted?(entry)
       result = !(entry.categories & self.planet.whitelisted_tags).empty?
-      p "------ ignored post:#{entry.title} with categories: [#{entry.categories.join(', ')}]" unless result
+      puts "  => Ignored post titled: #{entry.title} with categories: [#{entry.categories.join(', ')}]" unless result
       result
     end
 
@@ -32,8 +32,13 @@ class Planet
       parser = self.type ? @parsers.get_parser(self.type) : @parsers.get_parser_for(self.feed)
 
       # parser instances should mimick Feedzirra interface
-      feed = parser.fetch_and_parse(self.feed)
-      $stderr.puts "Failed to fetch #{self.feed}" && return if feed.is_a? Fixnum
+      parser.fetch_and_parse(self.feed,
+        :on_success => lambda { |url, feed| on_fetch_success(feed) },
+        :on_failure => lambda { |url, response_code, response_header, response_body| puts "  => Failed to fetch #{url} with response_code: #{response_code}" }
+      )
+    end
+
+    def on_fetch_success(feed)
       self.name ||= feed.title || 'the source'
       self.url ||= feed.url
 
